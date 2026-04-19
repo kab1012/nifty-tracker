@@ -27,7 +27,8 @@ async function fetchData() {
     attachHandlers();
     await restoreExpanded();
     renderErrors(json.errors);
-    document.getElementById('last-updated').textContent = 'Updated: ' + (json.last_updated || '—');
+    lastUpdatedAt = Date.now();
+    startTimeAgo();
     fetchBreadth();
     return true;
   } catch (e) { console.error('Fetch error:', e); return false; }
@@ -48,6 +49,22 @@ async function fetchBreadth() {
       if (!breadthPollTimer) breadthPollTimer = setInterval(fetchBreadth, 8000);
     }
   } catch(e) { console.error('Breadth fetch error:', e); }
+}
+
+function timeAgoText() {
+  if (!lastUpdatedAt) return 'Loading…';
+  const sec = Math.floor((Date.now() - lastUpdatedAt) / 1000);
+  if (sec <  60) return `Updated ${sec}s ago`;
+  if (sec < 3600) return `Updated ${Math.floor(sec / 60)}m ago`;
+  return `Updated ${Math.floor(sec / 3600)}h ago`;
+}
+
+function startTimeAgo() {
+  clearInterval(timeAgoTimer);
+  document.getElementById('last-updated').textContent = timeAgoText();
+  timeAgoTimer = setInterval(() => {
+    document.getElementById('last-updated').textContent = timeAgoText();
+  }, 1000);
 }
 
 function startCountdown() {
