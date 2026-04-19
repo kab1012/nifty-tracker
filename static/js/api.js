@@ -28,7 +28,6 @@ async function fetchData() {
     await restoreExpanded();
     renderErrors(json.errors);
     lastUpdatedAt = Date.now();
-    startTimeAgo();
     fetchBreadth();
     return true;
   } catch (e) { console.error('Fetch error:', e); return false; }
@@ -57,14 +56,6 @@ function timeAgoText() {
   if (sec <  60) return `Updated ${sec}s ago`;
   if (sec < 3600) return `Updated ${Math.floor(sec / 60)}m ago`;
   return `Updated ${Math.floor(sec / 3600)}h ago`;
-}
-
-function startTimeAgo() {
-  clearInterval(timeAgoTimer);
-  document.getElementById('last-updated').textContent = timeAgoText();
-  timeAgoTimer = setInterval(() => {
-    document.getElementById('last-updated').textContent = timeAgoText();
-  }, 1000);
 }
 
 function startCountdown() {

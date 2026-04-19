@@ -5,11 +5,20 @@ let breadthPollTimer = null;
 let countdown      = REFRESH_SEC;
 let countdownTimer = null;
 let lastUpdatedAt  = null;
-let timeAgoTimer   = null;
 let expandedRows   = new Set();
 let mainSort       = { col: null, dir: 1 };
 const subSort      = {};
 const stockCache   = {};
+
+/* Shared 1-second ticker — clock + time-ago */
+function tick() {
+  const now = new Date();
+  document.getElementById('current-time').textContent =
+    now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+  document.getElementById('last-updated').textContent = timeAgoText();
+}
+tick();
+setInterval(tick, 1000);
 
 /* Boot */
 async function boot() {
